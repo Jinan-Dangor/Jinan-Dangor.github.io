@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-gem "github-pages", "~> 3.9.2", group: :jekyll_plugins
+gem "github-pages", "~> 227", group: :jekyll_plugins
 
 gem "jekyll"
 
