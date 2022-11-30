@@ -1,1 +1,4 @@
 source: C:\Users\Andrew\Documents\6 - Programming\Jinan Dangor Website\Jinan-Dangor.github.io\pages
+domain: jinan-dangor.github.io       # if you want to force HTTPS, specify the domain without the http at the start, e.g. example.com
+url: https://jinan-dangor.github.io  # the base hostname and protocol for your site, e.g. http://example.com
+baseurl: /_site                      # place folder name if the site is served in a subfolder
