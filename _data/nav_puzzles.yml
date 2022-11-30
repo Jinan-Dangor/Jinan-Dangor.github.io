@@ -1,0 +1,35 @@
+- name: Crosswords
+  link: /crosswords
+  has_children: true
+  children:
+    - name: A Crossword with Rotational Symmetry
+      link: /rotational_symmetry
+    - name: Highschool Cryptics 
+      link: /highschool_cryptics
+- name: Puzzle Hunts
+  link: /puzzle_hunts
+  has_children: true
+  children:
+    - name: Hunts in Development
+      link: /hunts_in_development
+    - name: The Macquarie Labyrinth
+      link: /macquarie_labyrinth
+    - name: The Macquarie Labyrinth Redux
+      link: /macquarie_labyrinth_redux
+    - name: Lost in Translation - an Outer Wilds Puzzle Hunt
+      link: /lost_in_translation
+    - name: Of Utmost Importance
+      link: /of_utmost_importance
+    - name: Tournament Arc
+      link: /tournament_arc
+    - name: Boot Camp
+      link: /boot_camp
+    - name: 2020 Easter Egg Hunt
+      link: /nc_easter_hunt
+    - name: Student-Themed Puzzle Hunts
+      link: /student_hunts
+    - name: Jailbreak Puzzle Hunts
+      link: /jailbreak_hunts
+- name: Misc. Puzzles
+  link: /misc_puzzles
+  has_children: false

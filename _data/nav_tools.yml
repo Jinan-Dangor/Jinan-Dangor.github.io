@@ -1,0 +1,6 @@
+- name: Jigsaw, Puzzle Hunt Web Dev Tool
+  link: /jigsaw
+  has_children: false
+- name: Civ VI Babylon Tech Guide
+  link: /babylon_tech_guide
+  has_children: false
