@@ -1,0 +1,19 @@
+<div class="sidebar one_quarter first"> 
+    <h6>Navigation</h6>
+    <nav class="sdb_holder accordion">
+        <ul>
+            {% for item in include.nav_source %}
+                <div class="accordion-item">
+                <li><a href="{{ include.category }}{{ item.link }}.html" {% if item.has_children %}class="sidebar-drop"{% endif %}>{{ item.name }}</a></li>
+                {% if item.has_children %}
+                <ul class="accordion-item-content">
+                    {% for subitem in item.children %}
+                    <li><a href="{{ include.category }}{{ item.link }}{{ subitem.link }}.html">{{ subitem.name }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                </div>
+            {% endfor %}
+        </ul>
+    </nav>
+</div>
