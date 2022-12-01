@@ -25,6 +25,16 @@ File: Layout CSS
     transition: max-height .5s;
 }
 
+.spoiler {
+	color: black; 
+  	background-color:black;
+}
+
+.spoiler:hover {
+	color: inherit;
+	background-color:inherit;
+}
+
 /* Rows
 --------------------------------------------------------------------------------------------------------------- */
 .row0, .row0 a{}
