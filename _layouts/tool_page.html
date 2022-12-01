@@ -27,8 +27,8 @@ Licence URI: https://www.os-templates.com/template-terms
     <!-- ################################################################################################ -->
     <ul>
       <li><a href="/pages{{page.link}}.html">Tools</a></li>
-      {% if page.category %}<li><a href="{{page.link}}{{page.category_link}}.html">{{page.category}}</a></li>{% endif %}
-      {% if page.subcategory %}<li><a href="{{page.link}}{{page.subcategory_link}}.html">{{page.subcategory}}</a></li>{% endif %}
+      {% if page.category %}<li><a href="/pages{{page.link}}{{page.category_link}}.html">{{page.category}}</a></li>{% endif %}
+      {% if page.subcategory %}<li><a href="/pages{{page.link}}{{page.category_link}}{{page.subcategory_link}}.html">{{page.subcategory}}</a></li>{% endif %}
     </ul>
     <!-- ################################################################################################ -->
   </div>
