@@ -8,8 +8,8 @@
       link: /puzzle_hunts
     - name: Misc. Puzzles
       link: /misc_puzzles
-- name: ttrpgs
-  link: /pages/ttrpgs
+- name: trpgs
+  link: /pages/trpgs
   has_children: true
   children:
     - name: Homebrew Systems
