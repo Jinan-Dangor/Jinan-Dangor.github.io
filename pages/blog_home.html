@@ -12,7 +12,7 @@ Licence URI: https://www.os-templates.com/template-terms
 <html lang="">
     <!-- To declare your language - read more here: https://www.w3.org/International/questions/qa-html-language-declarations -->
     <head>
-        <title>About Me</title>
+        <title>Blog</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link href="/assets/css/layout.css" rel="stylesheet" type="text/css" media="all" />
@@ -36,20 +36,17 @@ Licence URI: https://www.os-templates.com/template-terms
                 <!-- main body -->
                 <!-- ################################################################################################ -->
                 <div class="sectiontitle">
-                    <h3 class="heading">About Me</h3>
+                    <h3 class="heading">Blog</h3>
                     <p></p>
                 </div>
-                <p class="btmspace-50 justified">
-                    Hi! My name's Andrew, though you'll usually see me using my handle Jinan Dangor (pronounced however you'd like to pronounce it). I'm an amateur puzzle and game designer born in
-                    Newcastle, Australia, and currently residing in Sydney. I regularly run puzzle events and TRPGs, and spends a great deal of my spare time on a variety of side projects.
-                    <br /><br />
-                    Here you can find all of those projects that've reached a stage that makes them remotely acceptable to display publicly.
-                    <br /><br />
-                    If you'd like to get in contact, hit me up at <a href="mailto: jinandangor@gmail.com">jinandangor@gmail.com</a>. <br /><br />
-                    I also regularly attend a club run by writer and puzzle maker Sarina H. Find her work over at her website,
-                    <a href="https://scarlett-herring.wixsite.com/works">Scarlett Herring (original writing and mystery games)</a>.
-                </p>
-                {% include circle_links.html %}
+                <ul>
+                    {% for post in site.posts %}
+                    <li>
+                        <a href="{{ post.url }}">{{ post.title }}</a>
+                        <p>{{ post.excerpt }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
                 <!-- ################################################################################################ -->
                 <!-- / main body -->
                 <div class="clear"></div>

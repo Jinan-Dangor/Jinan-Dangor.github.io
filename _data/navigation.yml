@@ -2,23 +2,25 @@
   link: /pages/puzzles
   has_children: true
   children:
-    - name: Crosswords
-      link: /crosswords
-    - name: Puzzle Hunts
-      link: /puzzle_hunts
-    - name: Misc. Puzzles
-      link: /misc_puzzles
+      - name: Crosswords
+        link: /crosswords
+      - name: Puzzle Hunts
+        link: /puzzle_hunts
+      - name: Misc. Puzzles
+        link: /misc_puzzles
 - name: trpgs
   link: /pages/trpgs
   has_children: true
   children:
-    - name: Homebrew Systems
-      link: /homebrew
-    - name: Campaigns & Dungeons
-      link: /dungeons
+      - name: Homebrew Systems
+        link: /homebrew
+      - name: Campaigns & Dungeons
+        link: /dungeons
 - name: Tools
   link: /pages/tools
   has_children: false
+- name: Blog
+  link: /pages/blog_home
 - name: About Me
   link: /pages/about_me
   has_children: false
