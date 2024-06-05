@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-gem "github-pages", "~> 227", group: :jekyll_plugins
+gem "github-pages", "~> 231", group: :jekyll_plugins
 gem "webrick"
-
-gem "jekyll"
 
 source "https://rubygems.org"
 
