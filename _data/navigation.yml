@@ -20,7 +20,7 @@
   link: /pages/tools
   has_children: false
 - name: Blog
-  link: /pages/blog_home
+  link: /blog/index
 - name: About Me
   link: /pages/about_me
   has_children: false

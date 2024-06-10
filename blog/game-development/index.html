@@ -1,0 +1,30 @@
+---
+layout: blog
+blog_name: Game Development
+category: game-development
+pagination:
+    category: game-development
+    enabled: true
+    per_page: 10
+    trail:
+        before: 2
+        after: 2
+---
+
+Here you can find a collection of all of my blog entries.
+<br /><br />
+<details>
+    <summary>Click here to view a list of individual categories you can select:</summary>
+    {% assign current_category = site.data.blog_categories | where: 'safe_name', page.category | first %} {% assign child_categories = site.data.blog_categories | where: "safe_name", page.category |
+    map: "children" %}
+    <div class="blog-category-list">
+        <div class="category-container">
+            <a class="category" href='/blog{{ current_category | map: "link" }}'>{{ current_category | map: "name" }}</a>
+            <div class="subcategories">
+                {% for subcategory in child_categories %}
+                <a class="subcategory" href="/blog{{ current_category | map: 'link' }}{{ subcategory | map: 'link' }}">{{ subcategory | map: "name" }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</details>

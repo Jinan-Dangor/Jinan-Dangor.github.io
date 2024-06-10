@@ -1,4 +1,6 @@
 ---
+pagination:
+    enabled: true
 ---
 
 <!DOCTYPE html>
@@ -10,85 +12,85 @@ Licence: Free to use under our free template licence terms
 Licence URI: https://www.os-templates.com/template-terms
 -->
 <html lang="">
-<!-- To declare your language - read more here: https://www.w3.org/International/questions/qa-html-language-declarations -->
-<head>
-<title>Jinan Dangor's Website</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<link href="/assets/css/layout.css" rel="stylesheet" type="text/css" media="all">
-</head>
-<body id="top">
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
-{% include nav_bar.html %}
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
-<div class="bgded overlay" style="background-image:url('/assets/images/backgrounds/banner_background.png');">
-  <div id="pageintro" class="hoc clear"> 
-    <!-- ################################################################################################ -->
-    <div class="flexslider basicslider">
-      <ul class="slides">
-        <li>
-          <article>
-            <p></p>
-            <h3 class="heading">Welcome!</h3>
-            <p>Here you can find a collection of my many projects.</p>
-            <footer><a class="btn" href="/pages/about_me.html">About Me</a></footer>
-          </article>
-        </li>
-        <li>
-          <article>
-            <p></p>
-            <h3 class="heading">Looking for Puzzles?</h3>
-            <p>Check out my puzzle portfolio!</p>
-            <footer><a class="btn" href="/pages/puzzles.html">My Puzzles</a></footer>
-          </article>
-        </li>
-        <li>
-          <article>
-            <p></p>
-            <h3 class="heading">Introducing Jigsaw!</h3>
-            <p>Jigsaw is a tool for making static puzzle hunt websites that mimic live hunt functionality.</p>
-            <footer><a class="btn" href="/pages/tools/jigsaw.html">Jigsaw Static</a></footer>
-          </article>
-        </li>
-      </ul>
-    </div>
-    <!-- ################################################################################################ -->
-  </div>
-</div>
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
-<div class="wrapper row3">
-  <main class="hoc container clear"> 
-    <!-- main body -->
-    <!-- ################################################################################################ -->
-    <div class="sectiontitle">
-      <h3 class="heading">Come on in and check out my creations!</h3>
-      <p></p>
-    </div>
-    <p class="btmspace-50 justified"></p>
-    {% include circle_links.html %}
-    <!-- ################################################################################################ -->
-    <!-- / main body -->
-    <div class="clear"></div>
-  </main>
-</div>
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
-{% include footer.html %}
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
-<a id="backtotop" href="#top"><i class="fa fa-chevron-up"></i></a>
-<!-- JAVASCRIPTS -->
-<script src="/assets/js/jquery.min.js"></script>
-<script src="/assets/js/jquery.backtotop.js"></script>
-<script src="/assets/js/jquery.mobilemenu.js"></script>
-<script src="/assets/js/jquery.flexslider-min.js"></script>
-</body>
+    <!-- To declare your language - read more here: https://www.w3.org/International/questions/qa-html-language-declarations -->
+    <head>
+        <title>Jinan Dangor's Website</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link href="/assets/css/layout.css" rel="stylesheet" type="text/css" media="all" />
+    </head>
+    <body id="top">
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        {% include nav_bar.html %}
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <div class="bgded overlay" style="background-image: url('/assets/images/backgrounds/banner_background.png')">
+            <div id="pageintro" class="hoc clear">
+                <!-- ################################################################################################ -->
+                <div class="flexslider basicslider">
+                    <ul class="slides">
+                        <li>
+                            <article>
+                                <p></p>
+                                <h3 class="heading">Welcome!</h3>
+                                <p>Here you can find a collection of my many projects.</p>
+                                <footer><a class="btn" href="/pages/about_me.html">About Me</a></footer>
+                            </article>
+                        </li>
+                        <li>
+                            <article>
+                                <p></p>
+                                <h3 class="heading">Looking for Puzzles?</h3>
+                                <p>Check out my puzzle portfolio!</p>
+                                <footer><a class="btn" href="/pages/puzzles.html">My Puzzles</a></footer>
+                            </article>
+                        </li>
+                        <li>
+                            <article>
+                                <p></p>
+                                <h3 class="heading">Introducing Jigsaw!</h3>
+                                <p>Jigsaw is a tool for making static puzzle hunt websites that mimic live hunt functionality.</p>
+                                <footer><a class="btn" href="/pages/tools/jigsaw.html">Jigsaw Static</a></footer>
+                            </article>
+                        </li>
+                    </ul>
+                </div>
+                <!-- ################################################################################################ -->
+            </div>
+        </div>
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <div class="wrapper row3">
+            <main class="hoc container clear">
+                <!-- main body -->
+                <!-- ################################################################################################ -->
+                <div class="sectiontitle">
+                    <h3 class="heading">Come on in and check out my creations!</h3>
+                    <p></p>
+                </div>
+                <p class="btmspace-50 justified"></p>
+                {% include circle_links.html %}
+                <!-- ################################################################################################ -->
+                <!-- / main body -->
+                <div class="clear"></div>
+            </main>
+        </div>
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        {% include footer.html %}
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <a id="backtotop" href="#top"><i class="fa fa-chevron-up"></i></a>
+        <!-- JAVASCRIPTS -->
+        <script src="/assets/js/jquery.min.js"></script>
+        <script src="/assets/js/jquery.backtotop.js"></script>
+        <script src="/assets/js/jquery.mobilemenu.js"></script>
+        <script src="/assets/js/jquery.flexslider-min.js"></script>
+    </body>
 </html>

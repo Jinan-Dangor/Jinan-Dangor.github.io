@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.5">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-06-10T17:53:59+10:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Jinan-Dangor.github.io</title><subtitle>Public website for the works of Jinan Dangor.</subtitle><entry><title type="html">Yeet test</title><link href="http://localhost:4000/2024/06/downloading-every-steam-game-copy.html" rel="alternate" type="text/html" title="Yeet test" /><published>2024-06-04T00:00:00+10:00</published><updated>2024-06-04T00:00:00+10:00</updated><id>http://localhost:4000/2024/06/downloading-every-steam-game%20copy</id><content type="html" xml:base="http://localhost:4000/2024/06/downloading-every-steam-game-copy.html"><![CDATA[<p>So I wanted to make a game, and to make that game I needed to download every game on Steam.</p>
+
+<!--more-->
+
+<p><br /><br /></p>
+
+<p>Well, not the games themselves.
+I needed the games’ metadata so I can make a Cine2Nerdle-esque game as described in my previous blog post.
+If I had to download every game on Steam I’d probably run out of space after three AAA titles with uncompressed audio files.
+But it turns out that almost all the metadata I could want, for every game on Steam, only takes up about 30MB.
+<br /><br />
+That doesn’t mean getting that data was easy, though.
+I wanna document the process I ultimately used, and the journey to get there, because it turns out scraping data from Steam is a huge pain in the ass.
+I’m hoping that anybody trying to do the same in the future will find this and not have the repeat this process, because I would not wish it upon anyone.
+<br /><br />
+Let’s start with the basics.</p>
+
+<h1 id="so-you-want-to-download-every-game-on-steam">So you want to download every game on Steam</h1>
+
+<p>To start with, let’s establish the common ways of acquiring huge datasets on the web.</p>
+
+<ol>
+<li>Finding an existing datasource, and downloading it</li>
+<li>Using a webscraper to manually scrape the data you want from relevant webpages</li>
+<li>Getting the data from an API</li>
+</ol>
+
+<p>Finding an existing datasource is usually preferable if it’s possible.
+For example, you can just <a href="https://github.com/jesstess/Scrabble/blob/master/scrabble/sowpods.txt">download the SOWPODS Scrabble dictionary as plaintext</a>.
+If you’re looking to make your own Scrabble-like or any other kind of word game, this may be exactly what you need.
+Also, the SOWPODS dictionary doesn’t update too often, and when it does update it isn’t by much.
+This makes it a solid approach for that problem.
+<br /><br />
+Unfortunately, I couldn’t find a datasource like this for Steam games.
+Even if I could, it’d rapidly become outdated as new releases hit the shelves and people tried to use them in the game to no avail.
+So this approach won’t work here.
+<br /><br />
+I’ve done a little webscraping before (for my thesis, actually) using Selenium.
+For those unaware, webscraping basically involves loading a webpage then acting on it as if you were just a regular user.
+Using code to click on buttons, read text, and so on.
+Using this, you could find some way to scroll through every game on Steam, manually open the store page for every Steam game,
+read all the information you need and store it, then close it.
+<br /><br />
+While this works, there are a few issues for doing this on Steam, especially in order to acquire the details of tens of thousands of games.
+First of all, if Steam updates the format of its website (which you have to assume it will) then your scripts might break and require fixing.
+Second, when you load a webpage you end up loading a lot of unneeded information that makes the process slower and more bandwidth-intensive than it has to be.
+A steam store page seems to take up a few megabytes, so scraping the entire thing would take up hundreds of gigabytes of bandwidth.
+In addition to all that, I’m just not very experienced with webscrapers, and this seems like a poor choice of project to improve on those skills with.
+<br /><br />
+That just leaves us with…</p>
+
+<h1 id="using-the-steam-api">Using the Steam API</h1>
+
+<p>APIs let you get all the relevant data you want without also loading an entire webpage that you don’t need.
+Right now you can load up <a href="https://store.steampowered.com/api/appdetails?appids=632470">the Steam appdetails endpoint</a>
+or <a href="https://steamspy.com/api.php?request=appdetails&amp;appid=632470">SteamSpy</a> and get up a pretty useful list of details for any given game.
+(if you’re looking for the appid to put in the URL, it’s the number in the URL of the game on its Steam store page)
+<br /><br />
+Unfortunately, this does not mean we are home free. Even within that official steam endpoint, documentation is hazy at best.
+<br /><br />
+SteamSpy looks good initially but for some reason - of all the stuff to exclude - you can’t get the date the game was added to Steam.
+That’s a pretty important piece of info, because it helps disambiguate games with identical names without giving away much else.
+Not only that, but you get throttled pretty quickly while using it.
+<br /><br />
+The official Steam API also seems like an obvious choice - but, of all the thing it could not include, it doesn’t include Steam tags.
+Since that’s the whole point of the game, that basically makes it unusable.
+Not to mention it also starts throttling you pretty quickly if you make a lot of requests.
+<br /><br />
+If it weren’t for the throttling, I could just combine both APIs to get me full information on every game I want.
+But as it stands that’s way too cumbersome.
+<br /><br />
+With the throttling in mind, I estimated you could probably get all the data you needed from Steam in about a week of continuously running the script,
+pausing whenever you get rate throttled.
+That’s not <em>terrible</em> but it isn’t great, either.
+It’s also bad enough that if the game ended up being played by a few people at a time I probably couldn’t fetch any of this data live - you’d be making too many
+requests too quickly.
+<br /><br />
+Surely there had to be a better way?</p>
+
+<h1 id="node-steam-user-and-steamcmd">node-steam-user and SteamCMD</h1>
+
+<p>I looked to SteamDB for wisdom and <a href="https://steamdb.info/faq/#how-are-we-getting-this-information">their FAQ page</a>
+helpfully explains how they get their data and how one might go about getting it themselves.
+<br /><br />
+It’s here that they mention SteamCMD, a command line you can access in Steam and perform various operations with.
+It also references <a href="https://github.com/DoctorMcKay/node-steam-user">node-steam-user</a>, a node module with a function called <code class="language-plaintext highlighter-rouge">getProductInfo</code>
+that lets you get the results of running <code class="language-plaintext highlighter-rouge">app_info_print</code>, a SteamCMD command.
+This wasn’t obvious at first, but you can run this function while ‘anonymous’.
+In node-steam-user terms, this means you don’t have to login and authenticate with an actual Steam account to use this functionality.
+<br /><br />
+This is a huge relief, because doing that is scary.
+Or, maybe it isn’t scary. But all the stuff I could find on it online made it sound undesirable.
+<br /><br />
+This is a good time to mention that most people looking to do similar stuff to me are looking to make Steam Trading Bots.
+As such, they need full access to a Steam account and the ability to interact with it autonomously.
+This requires way more permissions than anything I need,
+but because every tool is set up to accomodate that it makes it look like you can’t do it without performing some scary steps.
+A <a href="https://www.reddit.com/r/SteamBot/comments/10dgejp/question_how_to_get_steams_shared_secret_for_totp/">guy on Reddit</a>
+tried to solve this problem then <a href="https://gist.github.com/mathielo/8367e464baa73941a075bae4dd5eed90">wrote a guide</a> to step you through
+the process of getting all the necessary secrets and there’s a big Disclaimer at the start screaming
+“If you mess this up you might lose your Steam account or get exposed to hackers”.
+<br /><br />
+Those are things I would like <em>not</em> to happen.
+So I’m glad that I eventually dug deep enough to realise that none of that is necessary for what I’m attempting.
+<br /><br />
+Before moving on, I’d like to make the amusing observation that a lot of the people making these bots are likely children.
+I found a lot of threads <a href="https://steamcommunity.com/discussions/forum/0/1638669204732688825/">like this one</a>
+where the person trying to figure out how to get their shared secret can’t root their phone and might not even have access to a USB cable.
+I feel for them, since the main person responding to them in the thread is exceptionally unhelpful (but in an amusingly abrupt way).
+I’m not judging the (presumed) kid for this - that was me, long ago (and asking much stupider questions) - I just find stuff like this funny to read.
+<br /><br />
+Anyway.</p>
+
+<h1 id="getting-a-list-of-appids">Getting a list of AppIDs</h1>
+
+<p>This process is much easier, but I alsmost missed something that made it much easier.
+<a hef="https://steamapi.xpaw.me/">Here</a> you can use Steam’s public API to make various requests as long as you have a WebAPI key.
+Also - no, the <code class="language-plaintext highlighter-rouge">appdetails</code> endpoint I mentioned earlier is not listed here and no, I don’t know why.
+A WebAPI key is something you can just get for free with the link provided on that page.
+I don’t think the domain name you use even matters, it’s just for Steam’s record keeping or something.
+Unfortunately, if you’re like me, it might take a day or so to get that key because whenever you try and get it Steam tells you you’ve been making too many requests.
+I <em>suspect</em> this is because I’ve been using that <code class="language-plaintext highlighter-rouge">appdetails</code> endpoint a bunch and whatever system is rate limiting me is also holding me back from accessing this.
+<br /><br />
+One way or another, once you have that you can use <a href="https://steamapi.xpaw.me/#IStoreService/GetAppList">this endpoint</a> to get a list of all Steam games
+fulfilling certain critera.
+Of course, you could also be a fool, a rube, a buffoon, even, and use the <a href="https://steamapi.xpaw.me/#ISteamApps/GetAppList">identically named endpoint</a>
+listed under a different service and get a completely unfiltered list of games including test projects not listed on the store page.
+This decoy is listed under the ISteamApps service too, which seemed far more intuitive to find than the one under IStoreService.
+<br /><br />
+Oh well.</p>
+
+<h1 id="getting-a-list-of-tags">Getting a list of tags</h1>
+
+<p>Of all the APIs discussed, only SteamSpy actually gives you the plaintext names of a game’s store tags.
+So I have a bunch of numbers representing tags, but no way to know what they refer to.
+Finding out isn’t too hard though - I downloaded the <a href="https://steamdb.info/tags/time/">SteamDB list of Steam tags</a>
+(notice how I’ve listed them chronologically because the default way of viewing the page repeats tags across multiple categories)
+then I used a script to scrape the data off of it.
+<br /><br />
+There are definitely other ways to do this but this technique has the added bonus of giving me a corresponding emoji for every tag, which I think is cute.</p>
+
+<h1 id="results-and-notable-complications">Results and Notable Complications</h1>
+
+<p>Using this method you can scrape all 101017 Steam games on Steam (at time of writing) after running the script for under 10 hours.
+That may still seem like a while, but I can let it run in the background while I do some other stuff and it’s done in under a day.
+<br /><br />
+When I set all of this up I made it so that the program autosaves every 100 games and also remembers any games which it experienced an error while retrieving.
+It turns out that no matter how hard I try to only get the IDs of valid games some weird edge case always comes up,
+so I made sure that if something happened it’d just record the game’s ID, put it in the “don’t bother” bucket, then move on.
+<br /><br />
+I didn’t expect one of the first games to do this to be Portal 2.
+<br /><br />
+For whatever reason, Portal 2 does not have a listed release date when you retrieve its data the way I did.
+This is bizarre to me.
+If it was Half Life 2 - the first game you could get on Steam - I could understand there being some kind of edge case there.
+But Portal 2 is a Valve title released in 2011, seven years later.
+And it isn’t like this data is unavailable - you can see the release date on the store page.
+It’s not even that games older than a certain date had it stored in a legacy format you can’t retrieve - I can get Half Life 2’s release date just fine.
+So Portal 2 and a select few other titles just don’t have dates available in the game, and I had to rewrite the code to make including a date optional.
+<br /><br />
+It’s worth mentioning that now that I have all the data I need for almost every game, I could make a script that uses the more reliable APIs I described earlier
+(but didn’t use because they throttled me) to ‘repair’ the database and find these missing dates.
+In fact, I could even gradually build up a list of all sorts of useful tidbits from those APIs as people play the game, only fetching them when necessary,
+slowly building up a full database of them. I haven’t implemented this yet, so that’s a task for another day.</p>
+
+<h1 id="other-discoveries">Other Discoveries</h1>
+
+<p>As I continued to develop this process I was constantly looking for more ways to do more stuff with less API calls.
+One thing I discovered is that the banner image - the one above the description of the game is Steam - is stored at a reliable URL.
+As long as you know the AppID, you can just insert a hyperlink to it.
+<br /><br />
+I think this is very cool.
+In Cine2Nerdle you can get lifelines which help you get unstuck if you don’t know what to do.
+Since the banner images for these games generally include art meant to represent what the game is about, revealing this can be a good hint for what tags it might have.
+And I can retrieve all of these whenever I want, don’t even need to store them.
+Excellent.</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>So ultimately the process I followed was:</p>
+
+<ul>
+<li>Scrape tags from <a href="https://steamdb.info/tags/time/">SteamDB</a></li>
+<li>Get list of IDs from <a href="https://steamapi.xpaw.me/#IStoreService/GetAppList">GetAppList endpoint</a></li>
+<li>For each ID, get the data through the `getProductInfo` function of <a href="https://github.com/DoctorMcKay/node-steam-user">node-steam-user</a></li>
+</ul>
+
+<p>However, now that I’ve done this, you don’t have to!
+On the off chance you want the exact same data I do,
+<a href="https://github.com/Jinan-Dangor/TagTeam-Videogame-Battle/tree/singleplayer-battle">you can get it here</a>!
+I’ll be keeping the repository updated so that it contains instructions in the README for retrieving the data currently in the repo,
+and later the instructions for running the scripts yourself.
+<br /><br />
+In the future I’ll also try and refactor everything so that you can get the scripts and modify them easily to get any data available through the means I’m using.
+<br /><br />
+I learned a lot from all of this!
+I’ve already got the important features of the game working in couch co-op, so the next step is polishing it all up and setting it up as a proper hosted service.
+<br /><br />
+The latter is something I’m not particularly familiar with, so that’ll probably be the subject of my next post!</p>]]></content><author><name></name></author><category term="test-category" /><summary type="html"><![CDATA[So I wanted to make a game, and to make that game I needed to download every game on Steam.]]></summary></entry><entry><title type="html">Downloading Every Steam Game</title><link href="http://localhost:4000/2024/06/downloading-every-steam-game.html" rel="alternate" type="text/html" title="Downloading Every Steam Game" /><published>2024-06-04T00:00:00+10:00</published><updated>2024-06-04T00:00:00+10:00</updated><id>http://localhost:4000/2024/06/downloading-every-steam-game</id><content type="html" xml:base="http://localhost:4000/2024/06/downloading-every-steam-game.html"><![CDATA[<p>So I wanted to make a game, and to make that game I needed to download every game on Steam.</p>
+
+<!--more-->
+
+<p>Well, not the games themselves.
+I needed the games’ metadata so I can make a Cine2Nerdle-esque game as described in my previous blog post.
+If I had to download every game on Steam I’d probably run out of space after three AAA titles with uncompressed audio files.
+But it turns out that almost all the metadata I could want, for every game on Steam, only takes up about 30MB.
+<br /><br />
+That doesn’t mean getting that data was easy, though.
+I wanna document the process I ultimately used, and the journey to get there, because it turns out scraping data from Steam is a huge pain in the ass.
+I’m hoping that anybody trying to do the same in the future will find this and not have the repeat this process, because I would not wish it upon anyone.
+<br /><br />
+Let’s start with the basics.</p>
+
+<h1 id="so-you-want-to-download-every-game-on-steam">So you want to download every game on Steam</h1>
+
+<p>To start with, let’s establish the common ways of acquiring huge datasets on the web.</p>
+
+<ol>
+  <li>Finding an existing datasource and downloading it</li>
+  <li>Using a webscraper to manually scrape the data you want from relevant webpages</li>
+  <li>Getting the data from an API</li>
+</ol>
+
+<p>Finding an existing datasource is usually preferable if it’s possible.
+For example, you can just <a href="https://github.com/jesstess/Scrabble/blob/master/scrabble/sowpods.txt">download the SOWPODS Scrabble dictionary as plaintext</a>.
+If you’re looking to make your own Scrabble-like or any other kind of word game, this may be exactly what you need.
+Also, the SOWPODS dictionary doesn’t update too often, and when it does update it isn’t by much.
+This makes it a solid approach for that problem.
+<br /><br />
+Unfortunately, I couldn’t find a datasource like this for Steam games.
+Even if I could, it’d rapidly become outdated as new releases hit the shelves and people tried to use them in the game to no avail.
+So this approach won’t work here.
+<br /><br />
+I’ve done a little webscraping before (for my thesis, actually) using Selenium.
+For those unaware, webscraping basically involves loading a webpage then acting on it as if you were just a regular user.
+Using code to click on buttons, read text, and so on.
+Using this, you could find some way to manually open the store page for every game on Steam,
+read all the information you need, store it, then close it.
+<br /><br />
+While this works, there are a few issues for doing this on Steam, especially in order to acquire the details of tens of thousands of games.
+First of all, if Steam updates the format of its website (which you have to assume it will) then your scripts might break and require fixing.
+Second, when you load a webpage you end up loading a lot of unneeded information that makes the process slower and more bandwidth-intensive than it has to be.
+A steam store page seems to take up a few megabytes, so scraping the entire thing would take up hundreds of gigabytes of bandwidth.
+In addition to all that, I’m just not very experienced with webscrapers, and this seems like a poor choice of project to improve on those skills with.
+<br /><br />
+That just leaves us with…</p>
+
+<h1 id="using-the-steam-api">Using the Steam API</h1>
+
+<p>APIs let you get all the relevant data you want without also loading an entire webpage that you don’t need.
+Right now you can load up <a href="https://store.steampowered.com/api/appdetails?appids=632470">the Steam appdetails endpoint</a>
+or <a href="https://steamspy.com/api.php?request=appdetails&amp;appid=632470">SteamSpy</a> and get up a pretty useful list of details for any given game.
+(If you’re looking for the appid to put in the URL, it’s the number in the URL of the game on its Steam store page)
+<br /><br />
+Unfortunately, this does not mean we are home free. Even within that official steam endpoint, documentation is hazy at best.
+<br /><br />
+SteamSpy looks good initially but for some reason - of all the stuff to exclude - you can’t get the date the game was added to Steam.
+That’s a pretty important piece of info, because it helps disambiguate games with identical names without giving away much else.
+Not only that, but you get throttled pretty quickly while using it.
+<br /><br />
+The official Steam API also seems like an obvious choice - but, of all the thing it could not include, it doesn’t include Steam tags.
+Since that’s the whole point of the game, that basically makes it unusable.
+Not to mention it also starts throttling you pretty quickly if you make a lot of requests.
+<br /><br />
+If it weren’t for the throttling, I could just combine both APIs to get me full information on every game I want.
+But as it stands that’s way too cumbersome.
+<br /><br />
+With the throttling in mind, I estimated I could probably get all the data I needed from Steam in about a week of continuously running the script,
+pausing whenever I got rate throttled.
+That’s not <em>terrible</em> but it isn’t great, either.
+It’s also bad enough that if the game ended up being played by a few people at a time I probably couldn’t fetch any of this data live - you’d be making too many
+requests too quickly.
+<br /><br />
+Surely there had to be a better way?</p>
+
+<h1 id="node-steam-user-and-steamcmd">node-steam-user and SteamCMD</h1>
+
+<p>I looked to SteamDB for wisdom and <a href="https://steamdb.info/faq/#how-are-we-getting-this-information">their FAQ page</a>
+helpfully explains how they get their data and how one might go about getting it themselves.
+<br /><br />
+It’s here that they mention SteamCMD, a command line you can access in Steam and perform various operations with.
+It also references <a href="https://github.com/DoctorMcKay/node-steam-user">node-steam-user</a>, a node module with a function called <code class="language-plaintext highlighter-rouge">getProductInfo</code>
+that lets you get the results of running <code class="language-plaintext highlighter-rouge">app_info_print</code>, a SteamCMD command.
+This wasn’t obvious at first, but you can run this function while ‘anonymous’.
+In node-steam-user terms, this means you don’t have to login and authenticate with an actual Steam account to use this functionality.
+<br /><br />
+This is a huge relief, because doing that is scary.
+Or, maybe it isn’t scary. But all the stuff I could find on it online made it sound undesirable.
+<br /><br />
+This is a good time to mention that most people looking to do similar stuff to me are looking to make Steam Trading Bots.
+As such, they need full access to a Steam account and the ability to interact with it autonomously.
+This requires way more permissions than anything I need,
+but because every tool is set up to accommodate that it makes it look like you can’t do it without performing some scary steps.
+A <a href="https://www.reddit.com/r/SteamBot/comments/10dgejp/question_how_to_get_steams_shared_secret_for_totp/">guy on Reddit</a>
+tried to solve this problem then <a href="https://gist.github.com/mathielo/8367e464baa73941a075bae4dd5eed90">wrote a guide</a> to step you through
+the process of getting all the necessary secrets and there’s a big Disclaimer at the start screaming
+“If you mess this up you might lose your Steam account or get exposed to hackers”.
+<br /><br />
+Those are things I would like <em>not</em> to happen.
+So I’m glad that I eventually dug deep enough to realise that none of that is necessary for what I’m attempting.
+<br /><br />
+Before moving on, I’d like to make the amusing observation that a lot of the people making these bots are likely children.
+I found a lot of threads <a href="https://steamcommunity.com/discussions/forum/0/1638669204732688825/">like this one</a>
+where the person trying to figure out how to get their shared secret can’t root their phone and might not even have access to a USB cable.
+I feel for them, since the main person responding to them in the thread is exceptionally unhelpful (but in an amusingly abrupt way).
+I’m not judging the (presumed) kid for this - that was me, long ago (and asking much stupider questions) - I just find stuff like this funny to read.
+<br /><br />
+Anyway.</p>
+
+<h1 id="getting-a-list-of-appids">Getting a list of AppIDs</h1>
+
+<p>This process is simpler, but I almost missed something that made it much easier.
+<a href="https://steamapi.xpaw.me/">Here</a> you can use Steam’s public API to make various requests as long as you have a WebAPI key.
+Also - no, the <code class="language-plaintext highlighter-rouge">appdetails</code> endpoint I mentioned earlier is not listed here and no, I don’t know why.
+A WebAPI key is something you can just get for free with the link provided on that page.
+I don’t think the domain name you use even matters, it’s just for Steam’s record keeping or something.
+Unfortunately, if you’re like me, it might take a day or so to get that key because whenever you try and get it Steam tells you you’ve been making too many requests.
+I <em>suspect</em> this is because I’ve been using that <code class="language-plaintext highlighter-rouge">appdetails</code> endpoint a bunch and whatever system is rate limiting me is also holding me back from accessing this.
+<br /><br />
+One way or another, once you have that you can use <a href="https://steamapi.xpaw.me/#IStoreService/GetAppList">this endpoint</a> to get a list of all Steam games
+fulfilling certain criteria.
+Of course, you could also be a fool, a rube, a buffoon, even, and use the <a href="https://steamapi.xpaw.me/#ISteamApps/GetAppList">identically named endpoint</a>
+listed under a different service and get a completely unfiltered list of games including test projects not listed on the store page.
+This decoy is listed under the ISteamApps service too, which seemed far more intuitive to find than the one under IStoreService.
+<br /><br />
+Oh well.</p>
+
+<h1 id="getting-a-list-of-tags">Getting a list of tags</h1>
+
+<p>Of all the APIs discussed, only SteamSpy actually gives you the plaintext names of a game’s store tags.
+So I have a bunch of numbers representing tags, but no way to know what they refer to.
+Finding out isn’t too hard though - I downloaded the <a href="https://steamdb.info/tags/time/">SteamDB list of Steam tags</a>
+(notice how I’ve listed them chronologically because the default way of viewing the page repeats tags across multiple categories)
+then I used a script to scrape the data off of it.
+<br /><br />
+There are definitely other ways to do this but this technique has the added bonus of giving me a corresponding emoji for every tag, which I think is cute.</p>
+
+<h1 id="results-and-notable-complications">Results and Notable Complications</h1>
+
+<p>Using this method you can scrape all 101,017 games on Steam (at time of writing) after running the script for under 10 hours.
+That may still seem like a while, but I can let it run in the background while I do some other stuff and it’s done in under a day.
+<br /><br />
+When I set all of this up I made it so that the program autosaves every 100 games and also remembers any games which it experienced an error while retrieving.
+It turns out that no matter how hard I try to only get the IDs of valid games some weird edge case always comes up,
+so I made sure that if something happened it’d just record the game’s ID, put it in the “don’t bother” bucket, then move on.
+<br /><br />
+I didn’t expect one of the first games to do this to be Portal 2.
+<br /><br />
+For whatever reason, Portal 2 does not have a listed release date when you retrieve its data the way I did.
+This is bizarre to me.
+If it was Half Life 2 - the first game you could get on Steam - I could understand there being some kind of edge case there.
+But Portal 2 is a Valve title released in 2011, seven years later.
+And it isn’t like this data is unavailable - you can see the release date on the store page.
+It’s not even that games older than a certain date had it stored in a legacy format you can’t retrieve - I can get Half Life 2’s release date just fine.
+So Portal 2 and a select few other titles just don’t have dates available in the game, and I had to rewrite the code to make including a date optional.
+<br /><br />
+It’s worth mentioning that now that I have all the data I need for almost every game, I could make a script that uses the more reliable APIs I described earlier
+(but didn’t use because they throttled me) to ‘repair’ the database and find these missing dates.
+In fact, I could even gradually build up a list of all sorts of useful tidbits from those APIs as people play the game, only fetching them when necessary,
+slowly building up a full database of them. I haven’t implemented this yet, so that’s a task for another day.</p>
+
+<h1 id="other-discoveries">Other Discoveries</h1>
+
+<p>As I continued to develop this process I was constantly looking for ways to do more stuff with less API calls.
+One thing I discovered is that the banner image - the one above the description of the game is Steam - is stored at a reliable URL.
+As long as you know the AppID, you can just insert a hyperlink to it.
+<br /><br />
+I think this is very cool.
+In Cine2Nerdle you can get lifelines which help you get unstuck if you don’t know what to do.
+Since the banner images for these games generally include art meant to represent what the game is about, revealing this can be a good hint for what tags it might have.
+And I can retrieve all of these whenever I want, don’t even need to store them.
+Excellent.</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>So ultimately the process I followed was:</p>
+
+<ul>
+  <li>Scrape tags from <a href="https://steamdb.info/tags/time/">SteamDB</a></li>
+  <li>Get list of IDs from <a href="https://steamapi.xpaw.me/#IStoreService/GetAppList">the GetAppList endpoint</a></li>
+  <li>For each ID, get the data through the <code class="language-plaintext highlighter-rouge">getProductInfo</code> function of <a href="https://github.com/DoctorMcKay/node-steam-user">node-steam-user</a></li>
+</ul>
+
+<p>However, now that I’ve done this, you don’t have to!
+On the off chance you want the exact same data I do,
+<a href="https://github.com/Jinan-Dangor/TagTeam-Videogame-Battle/tree/singleplayer-battle">you can get it here</a>!
+I’ll be keeping the repository updated so that it contains instructions in the README for retrieving the data currently in the repo,
+and later the instructions for running the scripts yourself.
+<br /><br />
+In the future I’ll also try and refactor everything so that you can get the scripts and modify them easily to get any data available through the means I’m using.
+<br /><br />
+I learned a lot from all of this!
+I’ve already got the important features of the game working in couch co-op, so the next step is polishing it and setting it up as a proper hosted service.
+<br /><br />
+The latter is something I’m not particularly familiar with, so that’ll probably be the subject of my next post!</p>]]></content><author><name></name></author><category term="game-development" /><summary type="html"><![CDATA[So I wanted to make a game, and to make that game I needed to download every game on Steam.]]></summary></entry><entry><title type="html">New Game Idea: Tag Team</title><link href="http://localhost:4000/2024/05/tag-team-motivation.html" rel="alternate" type="text/html" title="New Game Idea: Tag Team" /><published>2024-05-27T00:00:00+10:00</published><updated>2024-05-27T00:00:00+10:00</updated><id>http://localhost:4000/2024/05/tag-team-motivation</id><content type="html" xml:base="http://localhost:4000/2024/05/tag-team-motivation.html"><![CDATA[<p>Making a game for a friend who has never watched a movie.</p>
+
+<!--more-->
+
+<p>You might think this is hyperbole, and it is, but not by a lot.
+<br /><br />
+To give some background, I really like <a href="https://www.cinenerdle2.app/battle">Cine2Nerdle’s Battle Mode</a>.
+It’s a competitive 1v1 game where you’re given a movie, asked to name another movie that shares a cast member,
+then play is passed to your opponent to do the same.
+When you successfully pick a film it reveals the ‘links’ (shared cast) between those films, and you can’t use the same link more than 3 times
+(each use puts a ‘strike’ next to that link, three strikes and it can’t be used any longer).
+<br /><br />
+I really like this game, especially because my brain doesn’t really organise information this way.
+I’ve always had trouble recognising actors, and when I’ve recognised them I haven’t known their names,
+and even if I’m told their name I might not be able to name a single film they’re in even if I’ve seen a dozen of them.
+This game motivates me to form those links, which in turn gives me a stronger idea of the careers of various actors and directors.
+<br /><br />
+Another great thing about this game is it’s really easy to play with friends.
+The format lends itself a lot to being in a team (people tend to have different film tastes, so everyone can contribute something a little different)
+and pretty much everyone has seen plenty of movies in their life (although recent trends suggest shrinking attention spans are slowly eroding that reality).
+<br /><br />
+The story of this game starts with a friend who has seen no movies.
+<br /><br />
+When I suggest this game to people they often say “I dunno, I haven’t seen a lot of movies…” and then proceed to thrash me.
+Turns out most people have seen a lot more movies than they think.
+And even if they don’t know the names of the actors in those films, they can picture them in their head and find another movie they’re in.
+<br /><br />
+So when a friend of mine said they hadn’t really seen any movies, I was optimistic that they were underestimating themselves.
+I set the starting movies to Avengers: Endgame.
+<br /><br />
+For those unaware, Avengers: Endgame is a common (and poetically appropriate) movie people will randomly guess if they feel stuck.
+This is because the movie contains pretty much every actor.
+Even if you haven’t seen it (like me, funnily enough)
+you know Robert Downey Jr. is in it as Iron Man (the Sherlock Holmes movies, Dolitte, Tropic Thunder, Oppenheimer),
+Samuel L Jackson of course makes an appearance (Django Unchained, Pulp Fiction, the Star Wars Prequels),
+there’s Mark Ruffalo (Now You See Me 1 and 2),
+Scarlett Johansson (Lost in Translation),
+Benedict Cumberbatch (every movie released after 2012)
+and Chris Pratt (The Super Mario Bros Movie).
+And I’m only naming non-MCU roles here.
+You could just shrug and put “Iron Man 3”, “Guardians of the Galaxy” or even “Avengers: Infinity War” if you really had no clue.
+<br /><br />
+My friend had 40 seconds to name a single movie that shared an actor with Endgame, and couldn’t do it.
+<br /><br />
+This is not a dig at him. If anything, I envy his zen-like unawareness of the MCU and every other property acquired by Disney.
+But since he clearly couldn’t play this game I tried to think of an alternative,
+and it just so happens that this friend of mine is one of the only people I know to beat me at “number of distinct games played” on Steam.
+<br /><br />
+So: an idea. What if we played the same game, but with videogames as the subject, rather than films?
+<br /><br />
+The immediate issue is that videogames generally don’t have a cast, and when they do it’s Troy Baker and Nolan North.
+They do have developers and publishers, but they don’t overlap much.
+Games tend to be either developed and published by the same entity (AAA games come to mind)
+or developed by someone whose life’s work is two games and published by a publisher whose published hundreds of games by devs in a similar situation
+(indie games).
+<br /><br />
+Neither of those are particularly fun to play, so the question remains “What could you use as links?”.
+Ideally a game should have around a dozen links - some well known or obvious, others more obscure -
+and there should be a spectrum of how much these links overlap.
+What I mean by that last point is that two games could have no link, one link, a few links or many links (one of those categories shouldn’t dominate).
+<br /><br />
+What we decided upon was Steam Tags.
+You can view these on the store page (currently displayed beneath the developer and publisher) and they fulfill most of these requirements pretty well.
+The main issue is that if two games share a tag, they usually share many tags.
+This is an issue with a few solutions, but they each have their own pros and cons.
+As such, I figured I’d implement all of them and see which ones stuck.
+<br /><br /></p>
+
+<h1 id="solution-1---top-5-steam-tags">Solution 1 - Top 5 Steam Tags</h1>
+
+<p>This is what we went with when playing the game casually the first time without any kind of system in place to keep track of everything.
+Steam shows you around 5 tags for a game on the store page for it, and they’re the most popular ones.
+So you essentially pretend every game has only five tags, and this makes everything a lot less of an issue.
+Games are usually linked by 1-3 tags, but rarely all of them. Even sequels tend to diverge.
+<br /><br />
+The biggest issue for me is that a lot of interesting tags get hidden by this method.
+‘Silent Protagonist’ is a fun tag which links otherwise unrelated games, but it’s basically never one of the top 5.
+Eliminating so many tags is especially an issue given that there’s a lot more actors than there are Steam tags.
+This means the game feels a lot more restrictive than a Cine2Nerdle game, with a lot less to learn.
+<br /><br />
+Finally, it can be unintuitive what tags are going to be in the top 5 tags for a game.
+In a test game, someone went from Binding of Isaac to The Legend of Bum-Bo via Edmund McMillen
+(we allow linking by developers and publishers in addition to tags).
+I thought it’d be hilarious to go from The Legend of Bum-Bo to HuniePop via the tag ‘Match 3’.
+That’s basically the central gameplay mechanic of both games, so surely it’s in the top 5 steam tags for both, right?
+It turns out that it’s actually in the top 5 for <em>neither</em> (although they do share ‘Puzzle’).
+<br /><br />
+This really cemented the idea that this technique was insufficient,
+so I tried thinking of alternatives that might achieve similar goals.</p>
+
+<h1 id="solution-2---called-tags">Solution 2 - Called Tags</h1>
+
+<p>In Cine2Nerdle you don’t have to name the actor you’re using to link films.
+This works well, because some people recognise an actor’s face but can’t remember (or spell) their name.
+It also means that movies which share a huge portion of their cast (Wes Anderson or Edgar Wright films come to mind)
+will suddenly spring all of them as links if you go between them,
+but this is fine because there’s a huge number of actors.
+<br /><br />
+I keep saying that there’s “a huge number of actors” to use as links compared to the tags we’ve got to work with,
+so let me give you a feel for how large that disparity is.
+At time of writing there’s 449 official Steam tags (according to SteamDB) and two similar Steam games
+could link on 4-8 tags. Endgame and Infinity War (possibly the films with the biggest overlap in cast) share a few dozen actors,
+but there’s thousands of them (getting stats on this is hard but a list of the Top 1000 Actors and Actresses on IMDb still ends on well known
+names, so I’d estimate there’s a few thousand well-known actors and hundreds of thousands of obscure ones you could still use in a game).
+As such, two run-of-the-mill games can put a comparable dent in the pool of links to the biggest crossover event in cinema history.
+<br /><br />
+Previously we fixed that by only using the top five tags, which limits the number of links and also means there’s essentially a random chance
+certain obvious links won’t get used (because they just happen to not be in the top 5 for one of the games), preserving them for later.
+Instead, we can say you need to specify the tag you’re using to connect two games.
+<br /><br />
+Unlike actors, tags are usually easy to intuit and name, so asking the user to explicitly state what they’re using isn’t a big drawback.
+This also encourages using more obscure tags to link between seemingly unrelated games, which I think is fun.
+However, this significant deviation from Cine2Nerdle raises a notable question:
+If two games share a link with three strikes (eg. Puzzle) but you state you’re linking them via a different tag (eg. Match 3) is that allowed?
+<br /><br />
+In my opinion the answer is ‘yes’.
+As stated earlier, Bum-Bo and HuniePop share ‘Match 3’ (a cool and interesting tag to link from), but also share ‘Puzzle’.
+Since most games with Match 3 will also have Puzzle (another unfortunate property of tags as links), you’ll rarely get to link off of these tags and nothing else.
+In particular, I hate the idea of getting cornered in Bum-Bo, with three strikes on Puzzle, then trying to escape through Match 3 and getting blocked.
+<br /><br />
+So in this system you can link off of developers/publishers without needing to name them (like in Cine2Nerdle)
+but if you want to link off of a tag you need to specify which one.
+Personally, I think this mode will see the most success.
+But it’s worth implementing all my options so I can experiment with them.</p>
+
+<h1 id="solution-3---allow-overlap">Solution 3 - Allow Overlap</h1>
+
+<p>In Cine2Nerdle, if Robert Downey Jr. has three strikes you cannot link between two Robert Downey Jr. movies, <em>even if there are other links between them</em>.
+This helps with a few things, an obvious one being you can’t exhaust every Harry Potter or Stan Lee movie before moving on.
+You can rarely play movies from the same series more than four times in a row because they usually share at least one cast member.
+<br /><br />
+But in this game, maybe allowing this isn’t so bad?
+If ‘Puzzle’ has already been exhausted, no problem, we’re not going to block you from traveling between Puzzle games as long as there’s at least one more link.
+This has a lot of similar advantages to the previous solution, but it feels less deliberate to me.
+If you type the names of three random Steam games you’ll probably find one with at least one link to your current game,
+so it encourages rapid guessing a lot more than deliberate demonstrations of knowledge.
+Not only that, it still ends up churning through tags like nothing else.
+It limits the impact of churning through tags, but you will still end up unable to use common tags to link between games relatively quickly,
+and I think that makes the game less accessible.
+It also means that cool moves like the ‘Match 3’ link I keep lauding end up also causing unintended strikes on common tags like ‘Puzzle’, so in some cases
+you won’t gain a lot by being stylish.
+<br /><br />
+Overall I’m not super satisfied with this technique. But it’s worth considering.
+<br /><br /></p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>With all of that out of the way it’s time to start developing the game.
+There’s only so much you can theorise about without just testing the ideas you’re playing around with.
+I’m going to get a local ‘couch co-op’ version going first, and move on from there.</p>]]></content><author><name></name></author><category term="game-development" /><summary type="html"><![CDATA[Making a game for a friend who has never watched a movie.]]></summary></entry></feed>

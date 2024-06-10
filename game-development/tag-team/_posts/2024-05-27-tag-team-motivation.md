@@ -1,6 +1,8 @@
 ---
-layout: post
+layout: blog_post
 title: "New Game Idea: Tag Team"
+category: game-development
+subcategory: tag-team
 ---
 
 Making a game for a friend who has never watched a movie.
@@ -9,13 +11,13 @@ Making a game for a friend who has never watched a movie.
 
 You might think this is hyperbole, and it is, but not by a lot.
 <br><br>
-To give some background, I really like <a href="https://www.cinenerdle2.app/battle">Cine2Nerdle's Battle Mode</a>.
-For those unaware, this is a competitive 1v1 game where you're given a movie, asked to name another movie that shares a cast member, director, etc,
+To give some background, I really like [Cine2Nerdle's Battle Mode](https://www.cinenerdle2.app/battle).
+It's a competitive 1v1 game where you're given a movie, asked to name another movie that shares a cast member,
 then play is passed to your opponent to do the same.
-When you successfully pick a film it reveals the 'links' (shared cast) between those films, and you can't use the same connection more than 3 times
-(each link puts a 'strike' next to that connection, three strikes and it can't be used any longer).
+When you successfully pick a film it reveals the 'links' (shared cast) between those films, and you can't use the same link more than 3 times
+(each use puts a 'strike' next to that link, three strikes and it can't be used any longer).
 <br><br>
-I really like this game, especially because my brain doesn't really organise information that way.
+I really like this game, especially because my brain doesn't really organise information this way.
 I've always had trouble recognising actors, and when I've recognised them I haven't known their names,
 and even if I'm told their name I might not be able to name a single film they're in even if I've seen a dozen of them.
 This game motivates me to form those links, which in turn gives me a stronger idea of the careers of various actors and directors.
@@ -28,7 +30,7 @@ The story of this game starts with a friend who has seen no movies.
 <br><br>
 When I suggest this game to people they often say "I dunno, I haven't seen a lot of movies..." and then proceed to thrash me.
 Turns out most people have seen a lot more movies than they think.
-And even if they don't know the names of the actors in those films, they can picture them in their mind and find another movie they're in.
+And even if they don't know the names of the actors in those films, they can picture them in their head and find another movie they're in.
 <br><br>
 So when a friend of mine said they hadn't really seen any movies, I was optimistic that they were underestimating themselves.
 I set the starting movies to Avengers: Endgame.
@@ -41,7 +43,7 @@ Samuel L Jackson of course makes an appearance (Django Unchained, Pulp Fiction, 
 there's Mark Ruffalo (Now You See Me 1 and 2),
 Scarlett Johansson (Lost in Translation),
 Benedict Cumberbatch (every movie released after 2012)
-and Chris Pratt (obviously, the Mario Movie).
+and Chris Pratt (The Super Mario Bros Movie).
 And I'm only naming non-MCU roles here.
 You could just shrug and put "Iron Man 3", "Guardians of the Galaxy" or even "Avengers: Infinity War" if you really had no clue.
 <br><br>
@@ -60,8 +62,8 @@ or developed by someone whose life's work is two games and published by a publis
 (indie games).
 <br><br>
 Neither of those are particularly fun to play, so the question remains "What could you use as links?".
-Ideally a game should have around a dozen of them - some well known or obvious, others more obscure -
-and there should be a spectrum of how mcuh these links overlap.
+Ideally a game should have around a dozen links - some well known or obvious, others more obscure -
+and there should be a spectrum of how much these links overlap.
 What I mean by that last point is that two games could have no link, one link, a few links or many links (one of those categories shouldn't dominate).
 <br><br>
 What we decided upon was Steam Tags.
@@ -97,27 +99,29 @@ so I tried thinking of alternatives that might achieve similar goals.
 
 In Cine2Nerdle you don't have to name the actor you're using to link films.
 This works well, because some people recognise an actor's face but can't remember (or spell) their name.
-It also means that movies which share a huge portion of their cast (Wes Andreson or Edgar Wright films come to mind)
-will suddenly spring all of them as links if you go between them.
-This is fine because there's a huge number of actors.
+It also means that movies which share a huge portion of their cast (Wes Anderson or Edgar Wright films come to mind)
+will suddenly spring all of them as links if you go between them,
+but this is fine because there's a huge number of actors.
 <br><br>
-To put these numbers in context, at time of writing there's 449 official Steam tags (according to SteamDB) and two similar Steam games
-could link on 4-8 tags. Endgame and Infinity War, possibly the films with the most shared cast, share a few dozen actors,
+I keep saying that there's "a huge number of actors" to use as links compared to the tags we've got to work with,
+so let me give you a feel for how large that disparity is.
+At time of writing there's 449 official Steam tags (according to SteamDB) and two similar Steam games
+could link on 4-8 tags. Endgame and Infinity War (possibly the films with the biggest overlap in cast) share a few dozen actors,
 but there's thousands of them (getting stats on this is hard but a list of the Top 1000 Actors and Actresses on IMDb still ends on well known
-names, so I'd estimate there's a few thousand well-known actors but hundreds of thousands of obscure but useable ones).
+names, so I'd estimate there's a few thousand well-known actors and hundreds of thousands of obscure ones you could still use in a game).
 As such, two run-of-the-mill games can put a comparable dent in the pool of links to the biggest crossover event in cinema history.
 <br><br>
 Previously we fixed that by only using the top five tags, which limits the number of links and also means there's essentially a random chance
 certain obvious links won't get used (because they just happen to not be in the top 5 for one of the games), preserving them for later.
-Here we suggest an alternative: you need to specify the tag you're using to connect two games.
+Instead, we can say you need to specify the tag you're using to connect two games.
 <br><br>
 Unlike actors, tags are usually easy to intuit and name, so asking the user to explicitly state what they're using isn't a big drawback.
-This also encourages using more obscure tags to link between seamingly unrelated games, which I think is fun.
+This also encourages using more obscure tags to link between seemingly unrelated games, which I think is fun.
 However, this significant deviation from Cine2Nerdle raises a notable question:
 If two games share a link with three strikes (eg. Puzzle) but you state you're linking them via a different tag (eg. Match 3) is that allowed?
 <br><br>
 In my opinion the answer is 'yes'.
-As stated earlier, Bum-Bo and HuniePop share Match 3 (a cool and interesting tag to link from), but also share 'Puzzle'.
+As stated earlier, Bum-Bo and HuniePop share 'Match 3' (a cool and interesting tag to link from), but also share 'Puzzle'.
 Since most games with Match 3 will also have Puzzle (another unfortunate property of tags as links), you'll rarely get to link off of these tags and nothing else.
 In particular, I hate the idea of getting cornered in Bum-Bo, with three strikes on Puzzle, then trying to escape through Match 3 and getting blocked.
 <br><br>
@@ -133,7 +137,7 @@ This helps with a few things, an obvious one being you can't exhaust every Harry
 You can rarely play movies from the same series more than four times in a row because they usually share at least one cast member.
 <br><br>
 But in this game, maybe allowing this isn't so bad?
-If 'Puzzle' has already been exhausted, no problem, we're not going to block you from travelling between Puzzle games as long as there's at least one more link.
+If 'Puzzle' has already been exhausted, no problem, we're not going to block you from traveling between Puzzle games as long as there's at least one more link.
 This has a lot of similar advantages to the previous solution, but it feels less deliberate to me.
 If you type the names of three random Steam games you'll probably find one with at least one link to your current game,
 so it encourages rapid guessing a lot more than deliberate demonstrations of knowledge.

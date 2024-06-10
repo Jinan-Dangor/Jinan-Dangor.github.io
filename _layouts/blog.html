@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!--
+Template Name: Jeren
+Author: <a href="https://www.os-templates.com/">OS Templates</a>
+Author URI: https://www.os-templates.com/
+Licence: Free to use under our free template licence terms
+Licence URI: https://www.os-templates.com/template-terms
+-->
+<html lang="">
+    <!-- To declare your language - read more here: https://www.w3.org/International/questions/qa-html-language-declarations -->
+    <head>
+        <title>{{ page.blog_name }}</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <link href="/assets/css/layout.css" rel="stylesheet" type="text/css" media="all" />
+    </head>
+    <body id="top">
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        {% include nav_bar.html %}
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <div class="bgded overlay" style="background-image: url('/assets/images/backgrounds/banner_background.png')">
+            <div id="breadcrumb" class="hoc clear">
+                <ul>
+                    <li><a href="/blog/index.html">Blog</a></li>
+                    {% if page.category %}
+                    <li>
+                        <a href='/blog{{ site.data.blog_categories | where: "safe_name", page.category | first | map: "link" }}'
+                            >{{ site.data.blog_categories | where: "safe_name", page.category | first | map: "name" }}</a
+                        >
+                    </li>
+                    {% endif %} {% if page.subcategory %}
+                    <li>
+                        <a href='/blog{{ site.data.blog_categories | where: "safe_name", page.subcategory | first | map: "link" }}'
+                            >{{ site.data.blog_categories | where: "safe_name", page.subcategory | first | map: "name" }}</a
+                        >
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <div class="wrapper row3">
+            <main class="hoc container clear">
+                <!-- main body -->
+                <!-- ################################################################################################ -->
+                <h1 class="heading" style="text-align: center">{{ page.blog_name }}</h1>
+                <div>{{ content }}</div>
+                {% include nav_pagination.html %}
+                <div id="comments">
+                    <ul>
+                        {% for post in paginator.posts %}
+                        <li>
+                            <article>
+                                <header>
+                                    <address><a href="{{ post.url }}">{{ post.title }}</a></address>
+                                    <time datetime="2045-04-06T08:15+00:00">{{ post.date | date: "%-d %B %Y" }}</time>
+                                    <p class="categories">
+                                        {% for category in post.categories %}
+                                        <span><a href='/blog{{ site.data.blog_categories | where: "safe_name", category | first | map: "link" }}'>{{ category | replace: '-', " " }}</a></span>
+                                        {% endfor %}
+                                    </p>
+                                </header>
+                                <div class="comcont">
+                                    <p><em>{{ post.excerpt }}</em></p>
+                                    <p><a href="{{ post.url }}">Read More...</a></p>
+                                </div>
+                            </article>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% include nav_pagination.html %}
+                <!-- ################################################################################################ -->
+                <!-- / main body -->
+                <div class="clear"></div>
+            </main>
+        </div>
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        {% include footer.html %}
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <!-- ################################################################################################ -->
+        <a id="backtotop" href="#top"><i class="fa fa-chevron-up"></i></a>
+        <!-- JAVASCRIPTS -->
+        <script src="/assets/js/jquery.min.js"></script>
+        <script src="/assets/js/jquery.backtotop.js"></script>
+        <script src="/assets/js/jquery.mobilemenu.js"></script>
+        <script src="/assets/js/jquery.flexslider-min.js"></script>
+    </body>
+</html>
