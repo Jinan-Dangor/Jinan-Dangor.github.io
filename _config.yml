@@ -1,2 +1,21 @@
 #domain: jinan-dangor.github.io       # if you want to force HTTPS, specify the domain without the http at the start, e.g. example.com
 #url: https://jinan-dangor.github.io  # the base hostname and protocol for your site, e.g. http://example.com
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+excerpt_ separator: <!--more-->
+
+plugins: [jekyll-paginate-v2]
+
+permalink: /:year/:month/:title.html
+
+pagination:
+    enabled: true
+    per_page: 10
+    permalink: "/page/:num/"
+    title: " - page :num"
+    limit: 0
+    sort_field: "date"
+    sort_reverse: true
+    trail:
+        before: 2
+        after: 2

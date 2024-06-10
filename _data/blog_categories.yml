@@ -1,0 +1,12 @@
+- name: Game Development
+  safe_name: game-development
+  link: /game-development
+  has_children: true
+  children:
+      - name: Tag Team
+        safe_name: tag-team
+        link: /tag-team
+- name: Tag Team
+  safe_name: tag-team
+  link: /game-development/tag-team
+  has_children: false

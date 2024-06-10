@@ -1,0 +1,30 @@
+---
+layout: blog
+blog_name: Blog
+pagination:
+    enabled: true
+    per_page: 10
+    trail:
+        before: 2
+        after: 2
+---
+
+Here you can find a collection of all of my blog entries.
+<br /><br />
+<details>
+    <summary>Click here to view a list of individual categories you can select:</summary>
+    {% for category in site.data.blog_categories %} {% if category.has_children %}
+    <div class="blog-category-list">
+        <div class="category-container">
+            <a class="category" href='{{ category.link | prepend: "/blog" | prepend: site.baseurl }}'>{{ category.name }}</a>
+            {% if category.has_children %}
+            <div class="subcategories">
+                {% for child in category.children %}
+                <a class="subcategory" href='{{ child.link | prepend: category.link | prepend: "/blog" | prepend: site.baseurl }}'>{{ child.name }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %} {% endfor %}
+</details>
