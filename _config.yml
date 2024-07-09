@@ -7,6 +7,7 @@ excerpt_ separator: <!--more-->
 plugins: [jekyll-paginate-v2]
 
 permalink: /:year/:month/:title.html
+images: assets/images
 
 pagination:
     enabled: true
