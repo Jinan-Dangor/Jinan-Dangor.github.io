@@ -38,7 +38,7 @@ I set the starting movies to Avengers: Endgame.
 For those unaware, Avengers: Endgame is a common (and poetically appropriate) movie people will randomly guess if they feel stuck.
 This is because the movie contains pretty much every actor.
 Even if you haven't seen it (like me, funnily enough)
-you know Robert Downey Jr. is in it as Iron Man (the Sherlock Holmes movies, Dolitte, Tropic Thunder, Oppenheimer),
+you know Robert Downey Jr. is in it as Iron Man (the Sherlock Holmes movies, Dolittle, Tropic Thunder, Oppenheimer),
 Samuel L Jackson of course makes an appearance (Django Unchained, Pulp Fiction, the Star Wars Prequels),
 there's Mark Ruffalo (Now You See Me 1 and 2),
 Scarlett Johansson (Lost in Translation),
@@ -67,7 +67,7 @@ and there should be a spectrum of how much these links overlap.
 What I mean by that last point is that two games could have no link, one link, a few links or many links (one of those categories shouldn't dominate).
 <br><br>
 What we decided upon was Steam Tags.
-You can view these on the store page (currently displayed beneath the developer and publisher) and they fulfill most of these requirements pretty well.
+You can view these on the store page (currently displayed beneath the developer and publisher) and they fulfil most of these requirements pretty well.
 The main issue is that if two games share a tag, they usually share many tags.
 This is an issue with a few solutions, but they each have their own pros and cons.
 As such, I figured I'd implement all of them and see which ones stuck.
